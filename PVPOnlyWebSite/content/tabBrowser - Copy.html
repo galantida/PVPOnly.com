@@ -1,0 +1,162 @@
+﻿<!-- styling -->
+<style>
+    .Tabs
+    {
+        margin-left:0px;
+    }
+    .TabSelector
+    {
+        float:left;
+        border:1px solid;
+        width:72px;
+        padding:10px 0px 10px 0px;
+        color:#999999;
+        text-align:center;
+        cursor: pointer; 
+        margin:2px;
+        text-transform:capitalize;
+        cursor:hand;
+    }
+
+    .TabSelector:hover
+    {
+        float:left;
+        border:1px solid;
+        width:72px;
+        padding:10px 0px 10px 0px;
+        color:white;
+        text-align:center;
+        cursor: pointer; 
+        cursor:hand;
+        text-transform:capitalize;
+    }
+
+
+    .TabSelectorSelected
+    {
+        float:left;
+        border:1px solid;
+        width:72px;
+        padding:10px 0px 10px 0px;
+        color:#DDDDDD;
+        text-align:center;
+        font-weight:bold;
+        background:rgba(0, 0, 0, 0.5);
+        margin:2px;
+        text-transform:capitalize;
+    }
+    .TabContent
+    {
+        position:absolute;
+        visibility:hidden;
+        padding:10px;
+        margin:2px;
+        margin-top:4px;
+        margin-bottom:10px;
+        background:rgba(0, 0, 0, 0.5);
+        border-width: 1px;
+        border-style: solid; 
+        border-color: white;
+        overflow:auto;
+    }
+</style>
+
+
+<!-- HTML -->
+<div id="tabSelectors" class="Tabs"></div>
+<div style="clear:both;"></div>
+<div id="tabContent"></div>
+<div id="tabPlugins"></div>
+<div style="clear:both;"></div>
+
+
+<!-- Code -->
+<script>
+
+    // called from resize function in header
+    function resizeContent() {
+
+        // position and size content
+        var availableHeight = (document.getElementById("contentLocation").offsetHeight);
+        for (var t = 0; t < tabCount; t++) {
+            document.getElementById("tabContent" + t).style.width = (document.getElementById("pageLocation").offsetWidth - 32) + "px";
+            document.getElementById("tabContent" + t).style.height = (availableHeight - 90) + "px";
+        }
+    }
+
+    // tab loader
+    var tabCount = 0;
+    var tabs = [];
+    function loadTab(tabNo, tabName, tabDisplayName) {
+
+        // if optional tab display name is not passed use default name
+        if (tabDisplayName == null) tabDisplayName = tabName;
+
+        // use next available array index then increment
+        var tabNo = tabCount;
+        tabCount++;
+
+        // populate array element
+        tabs[tabNo] = { "name": tabName};
+        
+        // load tab file
+        console.log("loading tab '" + tabs[tabNo].name + "'");
+        $("#tabPlugins").load("../tabs/tab" + tabs[tabNo].name + ".html", function () { initTab(tabNo) });
+
+        // create tab selector & and tab content area loaded with default loading image
+        document.getElementById("tabSelectors").innerHTML += '<div id="tabSelector' + tabNo + '" name="' + tabs[tabNo].name + '" class="TabSelector" onclick="selectTab(' + tabNo + ');">' + tabDisplayName + '</div>';
+        document.getElementById("tabContent").innerHTML += '<div id="tabContent' + tabNo + '" class="TabContent">' + tabDisplayName.toUpperCase() + '<br /><br /><br /><br /><img src="..\\images\\misc\\LoadingGreen.gif"></div>';
+    }
+
+    // execute when tab is loaded
+    function initTab(tabNo) {
+        console.log("initializing tab '" + tabs[tabNo].name + "'");
+        var selectedFunctionName = tabs[tabNo].name + "Init";
+        if (typeof window[selectedFunctionName] == "function") window[selectedFunctionName](tabNo);
+        else console.log("ERROR: could not locate function '" + selectedFunctionName + "' for this tab.");
+    }
+
+    // execute what tab is selected
+    //var currentTabNo = null;
+    function selectTab(tabNo) {
+
+        //if (tabNo != currentTabNo) {
+        //    currentTabNo = tabNo;
+
+            // clear selected tab and set new
+            for (var t = 0; t < tabCount; t++) {
+                var tc = document.getElementById("tabContent" + t)
+                var ts = document.getElementById("tabSelector" + t)
+
+
+                if (t != tabNo) {
+                    ts.className = "TabSelector";
+                    tc.style.visibility = "hidden";
+                }
+                else {
+                    ts.className = "TabSelectorSelected";
+                    tc.style.visibility = "visible";
+                }
+            }
+
+            // execute tab selected function
+            console.log("selecting tab '" + tabs[tabNo].name + "'");
+            var selectedFunctionName = tabs[tabNo].name + "Selected";
+            if (typeof window[selectedFunctionName] == "function") window[selectedFunctionName]();
+            else console.log("ERROR: could not locate function '" + selectedFunctionName + "' for this tab.");
+            
+        //}
+    }
+
+    // load tabs
+    loadTab(0, "Session", mySession.account.CallSign)
+    loadTab(1, "Events")
+    //loadTab(2, "Messages")
+    //loadTab(3, "Groups")
+
+    // session request is set default because include occurs after document ready?
+    window.setTimeout(function () { selectTab(0); }, 100);
+
+</script>
+
+

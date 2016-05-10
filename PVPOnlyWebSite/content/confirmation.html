@@ -1,0 +1,87 @@
+﻿<!-- HTML -->
+<br /><br />
+<div id="panel" class="Container-Opac" style="width:250px;">
+    <span class="Container-Heading">Email Confirmation</span><br />
+    <br />
+    <span id="message" style="font-weight:bold;font-size:12px;"></span><br />
+    <br />
+    To continue you must first enter the confirmation code that you receved in your email box.<br />
+    <br />
+    <input id="confirmationCode" type="text" placeholder="Confirmation Number" onkeydown="displayMessage('');"/><br /><br />
+    <br />
+    <div id="controls" style="display:inline-block;text-align:center;">
+        <div class="Button" onclick="confirmationRequest();">Confirm</div>
+        <div class="Button" onclick="resendAddressConfirmationRequest();">Resend</div>
+        <div class="Button" onclick="loadContent('authentication');">Cancel</div>
+    </div>
+    <br />
+    <br />
+</div>
+<br />
+
+
+
+<!-- Code -->
+<script>
+    function resizeContent() {
+        var panel = document.getElementById("panel");
+        //panel.style.marginLeft = (((window.innerWidth - panel.clientWidth) / 2) - 8) + "px";
+        panel.style.marginLeft = (((contentWidth - panel.clientWidth) / 2) - 8) + "px"; // new rezie for mobile
+    }
+
+    function keyDownTextField(e) {
+        var keyCode = e.keyCode;
+        if (keyCode == 13) forgot();
+    }
+
+    function confirmationRequest() {
+
+        //validate fields
+        var confirmationCodeField = document.getElementById('confirmationCode');
+        if (confirmationCodeField.value == "") {
+            displayMessage("Confirmation Code is Required", "red");
+            confirmationCodeField.focus();
+            return;
+        }
+        
+        // send request
+        displayMessage("Requesting Confirmation...", "blue");
+        var params = { "confirmationCode": confirmationCodeField.value };
+        requestJSONInfo("session", "confirmation", params, confirmationResponse);
+    }
+
+    function confirmationResponse(obj) {
+        if (obj.summary != "Error") {
+            displayMessage(obj.Description, "blue");
+            setObjectLS("session", obj.obj);
+            loadContent("welcome");
+        }
+        else displayMessage(obj.Description, "red");
+    }
+
+    function resendAddressConfirmationRequest() {
+        // send request
+        displayMessage("Resending address confirmation email...", "blue");
+        requestJSONInfo("session", "resendAddressConfirmation", {}, resendAddressConfirmationResponse);
+        document.getElementById('confirmationCode').focus();
+    }
+    
+    function resendAddressConfirmationResponse(obj) {
+        displayMessage("Messsage sent. Please check your email inbox.", "green");
+    }
+
+    
+
+
+    function displayMessage(description, color) {
+        var field = document.getElementById("message");
+        field.style.color = color;
+        field.innerHTML = description;
+    }
+
+    resize();
+    document.addEventListener("keydown", keyDownTextField, false);
+    document.getElementById('confirmationCode').focus();
+</script>
+
+

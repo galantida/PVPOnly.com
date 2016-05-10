@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PVPOnlyLibrary.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="devConnectionString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Data source=ASUSG73\DGSQLServer2008;Initial Catalog=EZPortal;User ID=sa;Password=ibms3666;</Value>
+    </Setting>
+    <Setting Name="SMTPServer" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">smtpout.secureserver.net</Value>
+    </Setting>
+    <Setting Name="SMTPUserName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">systems@galanti.me</Value>
+    </Setting>
+    <Setting Name="SMTPPassword" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">IBMs3666</Value>
+    </Setting>
+    <Setting Name="prodConnectionString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Data source=ezportal1024.db.2495201.hostedresource.com;Initial Catalog=EZPortal1024;User ID=EZPortal1024;Password=LetMeIn1024;</Value>
+    </Setting>
+    <Setting Name="deployment" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">dev</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,6 @@
+C:\Users\Home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyLibrary\bin\Debug\PVPOnlyLibrary.dll.config
+C:\Users\Home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyLibrary\bin\Debug\PVPOnlyLibrary.dll
+C:\Users\Home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyLibrary\bin\Debug\PVPOnlyLibrary.pdb
+C:\Users\Home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyLibrary\obj\Debug\PVPOnlyLibrary.dll
+C:\Users\Home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyLibrary\obj\Debug\PVPOnlyLibrary.pdb
+C:\Users\Home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyLibrary\obj\Debug\PVPOnlyLibrary.csprojResolveAssemblyReference.cache

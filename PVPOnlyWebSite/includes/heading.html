@@ -1,0 +1,83 @@
+﻿<!-- Styles -->
+<style>
+    .heading {
+        background-color: #000000;
+        margin:0px;
+        padding:5px;
+    }
+    .headingLogo {
+        text-align:center;
+    }
+    .headingLogoff {
+        position: absolute;
+        padding:0px;
+        visibility:hidden;
+    }
+</style>
+
+
+
+<!-- HTML -->
+
+<!-- Quick Links -->
+<header>
+    <div id="divHeading" class="heading">
+        <div id="divLogoff" class="headingLogoff">
+            <a href="javascript:logoffRequest()"><img id="btnLogoff" src="..\images\misc\logoff.gif" width="32" height="32" alt="Logoff" border="0"/></a>
+        </div>
+
+        <!-- Site Logo -->
+        <div id="divLogo" class="headingLogo">
+            <a href="Welcome.aspx"><img id="imgLogo" src="..\Images\Logos\PVPLogoBlue.gif" width="127" height="63" alt="PVP Only Logo" border="0"/></a>    
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Code -->
+<script>
+    function resizeHeading() {       
+        
+
+
+        // resize and postion logo and logoff button
+        var imgLogo = document.getElementById("imgLogo");
+        var divLogoff = document.getElementById("divLogoff");
+        var btnLogoff = document.getElementById("btnLogoff");
+        if (window.innerWidth <= 800) {
+            // over all heading size
+            //document.getElementById("divHeading").style.height = "30px";
+
+            imgLogo.width = 64;
+            imgLogo.height = 32;
+
+            btnLogoff.width = 32;
+            btnLogoff.height = 32;
+            divLogoff.style.top = "4px"
+            divLogoff.style.left = (contentWidth - 36) + "px"
+        }
+        else {
+            // over all heading size
+            //document.getElementById("divHeading").style.height = "65px";
+
+            imgLogo.width = 128;
+            imgLogo.height = 64;
+
+            btnLogoff.width = 32;
+            btnLogoff.height = 32;
+            divLogoff.style.top = "16px"
+            divLogoff.style.left = (contentWidth - 48) + "px"
+        }
+       
+        
+        // only display logoff when the user is logged on
+        if (mySession != null) {
+            divLogoff.style.visibility = "visible";
+        }
+        else {
+            divLogoff.style.visibility = "hidden";
+        }
+    }
+</script>
+

@@ -1,0 +1,95 @@
+﻿<style>
+
+
+</style> 
+
+<!-- html -->
+    <div id="divGroupTag" style="position:absolute;visibility:hidden;">
+        <table class="Container-Opac" border="0" cellpadding="5" cellspacing="0" width="350px">
+            <tbody>
+                <tr><td colspan="2"><a href="Group.aspx?ID=2" class="GroupText">Civilian Contractors</a></td></tr>
+                <tr>
+                    <td><img src="../images/insignias/PRIVATE.gif"></td>
+                    <td nowrap=""><a href="Listing.aspx?List=Ranks" class="PortalLinks">Enlisted - PRIVATE</a><br>
+                        <font class="TagLabelText">SERIAL NUMBER:</font> <font class="TagLabelData">691534352</font><br>
+                        <font class="TagLabelText">DEDICATION POINTS:</font> <font class="TagLabelData">0</font> <font class="TagLabelText"> of </font> <font class="TagLabelData">1000</font><br>
+                        <table width="250px"><tbody>
+                            <tr><td class="PointBar" style="width:0%;height:1px;"></td><td class="PointBarBackground" style="width:100%;"></td></tr>
+                        </tbody></table>
+
+                    </td>
+                </tr>
+            </tbody></table>
+    </div>
+
+
+
+<script>
+     var Groups = null;
+     function GroupsRequest(tabNo) {
+         // check if data is null or old
+         //if ((myGroups == null) || (new Date(myGroups.received) < (Date.now() - 60000))) { // older than one minute
+         Groups = tabNo;
+         requestJSONInfo("groups", "myGroups", {}, GroupsResponse);
+         //}
+     }
+
+     function GroupsResponse(obj) {
+         if (obj.summary != "Error") {
+             var tabNo = Groups; // get tmp tab number
+             Groups = obj; // cache data
+
+             var html = '<span class="Container-Heading">GROUPS</span><br><br>';
+
+             if (Groups.obj.length > 0) {
+                 for (var t = 0; t < Groups.obj.length; t++) {
+                     html += "<span onclick='getMembersRequest(" + Groups.obj[t].ID + ", " + tabNo + ");'>" + Groups.obj[t].Name + "(" + Groups.obj[t].Tag + ")</span><br>";
+                     html += Groups.obj[t].Slogan + "<br>";
+                     html += "<hr>";
+                 }
+             }
+             else {
+                 html += "No Groups";
+             }
+
+             // display data by including html formatting from another file
+             document.getElementById("tabContent" + tabNo).innerHTML = html;
+             resize();
+         }
+         else console.log("Unexpected response.");
+     }
+
+     function getMembersRequest(groupID, tabNo) {
+         groupMembers = tabNo;
+         var parameters = { "groupID": groupID }
+         requestJSONInfo("groups", "getMembers", parameters, getMembersResponse);
+     }
+
+     function getMembersResponse(obj) {
+         if (obj.summary != "Error") {
+             var tabNo = groupMembers; // get tmp tab number
+             groupMembers = obj; // cache data
+
+             var html = "";
+             html += '<div onclick="myGroupsRequest(' + tabNo + ')" style="text-align:left;"><img src="../images/misc/Arrowlf.gif" width="32" height="32"></div>';
+             html += '<span class="Container-Heading">MEMBERS</span><br><br>';
+
+             if (groupMembers.obj.length > 0) {
+                 for (var t = 0; t < groupMembers.obj.length; t++) {
+                     html += groupMembers.obj[t].CallSign + "(" + groupMembers.obj[t].Tag + ")<br>";
+                     html += groupMembers.obj[t].Slogan + "<br>";
+                     html += "<hr>";
+                 }
+             }
+             else {
+                 html += "No Groups";
+             }
+
+             // display data by including html formatting from another file
+             document.getElementById("tabContent" + tabNo).innerHTML = html;
+             resize();
+         }
+         else console.log("Unexpected response.");
+     }
+</script>
+    

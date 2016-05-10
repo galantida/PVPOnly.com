@@ -1,0 +1,14 @@
+c:\users\home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyWebServices\bin\PVPOnlyWebServices.dll
+c:\users\home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyWebServices\bin\PVPOnlyWebServices.pdb
+c:\users\home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyWebServices\obj\Debug\PVPOnlyWebServices.dll
+c:\users\home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyWebServices\obj\Debug\PVPOnlyWebServices.pdb
+c:\users\home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyWebServices\obj\Debug\PVPOnlyWebServices.csprojResolveAssemblyReference.cache
+C:\Users\Home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyWebServices\bin\PVPOnlyLibrary.dll
+C:\Users\Home\documents\visual studio 2012\Projects\PVPOnlyWebServices\PVPOnlyWebServices\bin\PVPOnlyLibrary.pdb
+C:\Users\Home\Documents\Visual Studio 2012\Projects\PVPOnly.com\PVPOnlyWebServices\bin\PVPOnlyWebServices.dll
+C:\Users\Home\Documents\Visual Studio 2012\Projects\PVPOnly.com\PVPOnlyWebServices\bin\PVPOnlyWebServices.pdb
+C:\Users\Home\Documents\Visual Studio 2012\Projects\PVPOnly.com\PVPOnlyWebServices\bin\PVPOnlyLibrary.dll
+C:\Users\Home\Documents\Visual Studio 2012\Projects\PVPOnly.com\PVPOnlyWebServices\bin\PVPOnlyLibrary.pdb
+C:\Users\Home\Documents\Visual Studio 2012\Projects\PVPOnly.com\PVPOnlyWebServices\obj\Debug\PVPOnlyWebServices.csprojResolveAssemblyReference.cache
+C:\Users\Home\Documents\Visual Studio 2012\Projects\PVPOnly.com\PVPOnlyWebServices\obj\Debug\PVPOnlyWebServices.dll
+C:\Users\Home\Documents\Visual Studio 2012\Projects\PVPOnly.com\PVPOnlyWebServices\obj\Debug\PVPOnlyWebServices.pdb

@@ -1,0 +1,153 @@
+﻿
+<!-- styles -->
+<link rel="stylesheet" type="text/css" href="../styles/events.css" />
+
+<!-- script -->
+<script>
+    var events = null; // used to persist the data object for this tab
+
+    // executed on tab creation
+    var eventsTabName; // used only to carry the tabName through to the response
+    function tabEventsInit(tabName, selectable) {
+        eventsTabName = tabName;
+        requestJSONInfo("events", "myEvents", {}, eventsResponse);
+    }
+
+    // executed on tab selection
+    function tabEventsSelected(tabName) {
+        
+        // check if data is null or old
+        //if ((events == null) || (new Date(events.received) < (Date.now() - 60000))) { // older than one minute
+        requestJSONInfo("events", "myEvents", {}, eventsResponse);
+        //}
+        //else document.getElementById("tabContent" + tabName).innerHTML = displayEvents(events.obj);
+    }
+
+    function eventsResponse(response) {
+        if (response.summary != "Error") {
+            events = response; // cache data
+
+            // populate relative status once
+            for (var key in events.obj) {
+                events.obj[key].EventStatus = eventStatus(events.obj[key]);
+            }
+
+            // display events and resize
+            document.getElementById("tabContent" + eventsTabName).innerHTML = displayEvents(events.obj);
+            resize();
+        }
+        else console.log("Unexpected response.");
+    }
+
+    function eventStatus(event) {
+        var status = "unknown";
+
+        // simplify dates
+        var dt = new Date(Date.now());
+        var start = new Date(event.EventStart);
+        var end = new Date(event.EventEnd);
+
+        // calculate relationship
+        if (dt > end) status = "Past";
+        if ((dt > start) && (dt < end)) status = "Present";
+        if (dt < start) status = "Future";
+
+        // calculate archive
+        var lastYear = new Date(Date.now());
+        lastYear.setMonth(lastYear.getMonth() - 12);
+        if (start < lastYear) status = "Archive";
+
+        return status;
+    }
+
+    // display events
+    function displayEvents(events) {
+
+        var result = "";
+        result += "<span class='Container-Heading'>MY EVENTS</span><br><br>";
+        result += displayEventKey() + "<br>";
+
+        // display event listing
+        result += "<div style='text-align:left;'>";
+        if (events.length == 0) result = "No events to display.";
+        else {
+
+            var newHeading = "";
+            var lastHeading = "";
+
+            for (var key in events) {
+                var event = events[key];
+
+                // calculate headings for Now, comming up , past, over 1 year old
+                if (event.EventStatus == "Future") newHeading = "Future Events";
+                if (event.EventStatus == "Past") newHeading = "Past Events";
+                if (event.EventStatus == "Present") newHeading = "Events Going On Now";
+                if (event.EventStatus == "Archive") newHeading = "Over a Year Old";
+
+                // display heading if changed
+                if (newHeading != lastHeading) {
+                    result += "<br><font class='PortalTitles'>" + newHeading + "</font><hr>";
+                    lastHeading = newHeading;
+                }
+
+                // display each event
+                result += displayEventTag(event);
+                result += "<br>";
+            }
+        }
+        result += "</div>";
+        return result;
+    }
+
+    function displayEventKey() {
+        var result = "<div style='border-width:1px;border-style:solid;border-color:white;text-align:center;background:#000000;display: inline-block;'>";
+        result += "Event Color Key<br>&nbsp;&nbsp;";
+        result += "<font class='EventText FutureEvent'>Future</font>&nbsp;-&nbsp;";
+        result += "<font class='EventText EventAttended'>Attended</font>&nbsp;-&nbsp;";
+        result += "<font class='EventText EventMissed'>Missed</font>&nbsp;&nbsp;";
+        result += "</div>";
+        return result;
+    }
+
+    function displayEventTag(event) {
+        // dislpay ranked status
+        // display persons attendance in words (past is differenent then present and future)
+        //public enum RSVP { Invited, Accepted, Declined, Volunteered, None }
+        //public enum Attendance { Attended, Virtual, None }
+
+        var result = "<div onclick='selectEvent(" + event.EventID + ");'>";
+        var fontClass = "";
+        switch (event.relatedtime) {
+            case "Future":
+            case "Present":
+                {
+                    result += "<div style='float:left;width:200px;'><font class='EventText FutureEvent'>" + event.EventName + "</font></div>";
+                    result += "<div style='float:left;width:275px;'><font class='EventSubText'>" + displayDateTime(new Date(event.EventStart)) + "</font><br>";
+                    result += "<font class='EventIndicator'>" + event.RSVP + " - " + event.Attendance + "</font></div>";
+                    //result += "<font class=\"EventIndicator\">NULL</font><br>";
+                    result += "<div style='clear:both;'></div>";
+                }
+            case "Past":
+            default:
+                {
+                    // past event name
+                    if ((event.Attendance == "Attended") || (event.Attendance == "Virtual")) fontClass = "EventText EventAttended";
+                    else fontClass = "EventText EventMissed";
+                    result += "<div style='float:left;width:200px;'><font class='" + fontClass + "'>" + event.EventName + "</font></div>";
+                    result += "<div style='float:left;width:275px;'><font class='EventSubText'>" + displayDateTime(new Date(event.EventStart)) + "</font></div>";
+                    result += "<div style='float:left;width:200px;'><font class='EventIndicator'>" + event.RSVP + " - " + event.Attendance + "</font></div>";
+                    //result += "<font class=\"EventIndicator\">NULL</font><br>";
+                    result += "<div style='clear:both;'></div>";
+                }
+        }
+        result += "</div>";
+        return result;
+    }
+
+    function selectEvent(eventID) {
+        eventID = eventID + ""; // not sure what this does?
+        loadTab("tabEvent", eventID, false);
+        selectTab("tabEvent", eventID);
+    }
+</script>
+    

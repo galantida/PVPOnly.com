@@ -1,0 +1,190 @@
+﻿<!-- styling -->
+<style>
+    .Tabs
+    {
+        margin-left:0px;
+    }
+    .TabSelector
+    {
+        float:left;
+        border:1px solid;
+        width:72px;
+        padding:10px 0px 10px 0px;
+        color:#999999;
+        text-align:center;
+        cursor: pointer; 
+        margin:2px;
+        text-transform:capitalize;
+        cursor:hand;
+    }
+
+    .TabSelector:hover
+    {
+        float:left;
+        border:1px solid;
+        width:72px;
+        padding:10px 0px 10px 0px;
+        color:white;
+        text-align:center;
+        cursor: pointer; 
+        cursor:hand;
+        text-transform:capitalize;
+    }
+
+
+    .TabSelectorSelected
+    {
+        float:left;
+        border:1px solid;
+        width:72px;
+        padding:10px 0px 10px 0px;
+        color:#DDDDDD;
+        text-align:center;
+        font-weight:bold;
+        background:rgba(0, 0, 0, 0.5);
+        margin:2px;
+        text-transform:capitalize;
+    }
+    .TabContent
+    {
+        position:absolute;
+        visibility:visible;
+        padding:10px;
+        margin:2px;
+        margin-top:4px;
+        margin-bottom:10px;
+        background:rgba(0, 0, 0, 0.5);
+        border-width: 1px;
+        border-style: solid; 
+        border-color: white;
+        overflow:auto;
+    }
+</style>
+
+
+<!-- HTML -->
+<div id="tabSelectors" class="Tabs"></div>
+<div style="clear:both;"></div>
+<div id="tabContent"></div>
+<div id="tabPlugins"></div>
+<div style="clear:both;"></div>
+
+
+<!-- Code -->
+<script>
+
+    function loadTab(fileName, tabName, selectable) {
+
+        // create tab content areas
+        if (selectable != false) createTabSelector(fileName, tabName);
+        createTabContentArea(fileName, tabName);
+
+        // load tab file
+        var filePath = "../tabs/" + fileName + ".html";
+        var tabInitFunctionName = fileName + "Init";
+        if (typeof window[tabInitFunctionName] != "function") {
+            
+            console.log("Loading '" + filePath + "'...");
+            $("#tabPlugins").load(filePath, function () { initTab(fileName, tabName) });
+        }
+        else
+        {
+            console.log("File '" + filePath + "' already loaded.");
+            initTab(fileName, tabName)
+        }
+    }
+
+    function initTab(fileName, tabName) {
+        var tabInitFunctionName = fileName + "Init";
+        console.log("init tab executing function " + tabInitFunctionName + "('" + tabName + "')");
+        if (typeof window[tabInitFunctionName] == "function") window[tabInitFunctionName](tabName);
+        else console.log("WARNING: Init function named '" + tabInitFunctionName + "' does not exist in this tab file.");
+    }
+
+    function createTabSelector(fileName, tabName) {
+        console.log("adding tab selector " + tabName);
+        document.getElementById("tabSelectors").innerHTML += '<div id="tabSelector' + tabName + '" class="TabSelector" onclick="selectTab(\'' + fileName + '\',\'' + tabName + '\');">' + tabName + '</div>';
+    }
+
+    function selectableTab(tabName) {
+        // find this element document.getElementById("tabSelectors")
+        // return true or false;
+    }
+
+    function deleteTabSelector(tabName) {
+        var tabSelectorNode = document.getElementById("tabSelector" + tabName);
+        if (tabSelectorNode != null) {
+            console.log("removing tab selector " + tabName);
+            document.getElementById("tabSelectors").removeChild(tabSelectorNode);
+        }
+    }
+
+    function createTabContentArea(fileName, tabName) {
+        console.log("adding tab content " + tabName);
+        document.getElementById("tabContent").innerHTML += '<div id="tabContent' + tabName + '" class="TabContent">' + tabName.toUpperCase() + '<br /><br /><br /><br /><img src="..\\images\\misc\\LoadingGreen.gif"></div>';
+    }
+
+    function deleteTabContent(tabName) {
+        var tabContentNode = document.getElementById("tabContent" + tabName);
+        if (tabContentNode != null) {
+            console.log("removing tab content " + tabName);
+            document.getElementById("tabContent").removeChild(tabContentNode);
+        }
+    }
+
+    function selectTab(fileName, tabName) {
+        console.log("selected tab " + tabName);
+
+        // clear previous selected tab and set new one
+        var tabSelectors = document.getElementById("tabSelectors").childNodes;
+        for (var t = 0; t < tabSelectors.length; t++) {
+            var ts = tabSelectors[t];
+            if (ts.id != "tabSelector" + tabName) ts.className = "TabSelector";
+            else ts.className = "TabSelectorSelected";
+        }
+
+        // hide previous selected content and set new one visible
+        var tabContent = document.getElementById("tabContent").childNodes;
+        for (var t = 0; t < tabContent.length; t++) {
+            var tc = tabContent[t];
+            if (tc.id == "tabContent" + tabName) tc.style.visibility = "visible";
+            else {
+                if (typeof tc.style != "undefined") tc.style.visibility = "hidden";
+            }
+        }
+        
+        // execute tab selected function
+        var selectedFunctionName = fileName + "Selected";
+        
+        if (typeof window[selectedFunctionName] == "function") {
+            console.log("Selected tab executing function " + selectedFunctionName + "('" + tabName + "')");
+            window[selectedFunctionName](tabName);
+        }
+        else console.log("WARNING: Select function named '" + selectedFunctionName + "' does not exist in this tab file.");
+
+        return;
+
+    }
+
+    // called from resize function in header
+    function resizeContent() {
+
+        // position and size content
+        var availableHeight = (document.getElementById("contentLocation").offsetHeight);
+
+        var tabContent = document.getElementById("tabContent").childNodes;
+        for (var t = 0; t < tabContent.length; t++) {
+            var tc = tabContent[t];
+            if (typeof tc.style != "undefined") {
+                tc.style.width = (document.getElementById("pageLocation").offsetWidth - 32) + "px";
+                tc.style.height = (availableHeight - 90) + "px";
+            }
+        }
+    }
+
+    loadTab("tabEvents", "Events"); // load tabs
+    selectTab("tabEvents","Events"); // open default tab
+
+</script>
+
+

@@ -1,0 +1,27 @@
+<div id="CDT"></div>
+
+<script>
+function display(containerElement, numberString) {
+	var width = 84; // digit width
+	for (var digit=0; digit<=numberString.length; digit++) {
+		// add a digit element to the container
+		containerElement.innerHTML += "<img id='digit" + digit + "' src='digits.jpg' style='position:absolute;'/>"
+		
+		// display appropriate digit 
+		var digitElement = document.getElementById("digit" + digit);
+		var c = numberString.substring(digit,digit + 1);
+		if (c
+		var value = Number(numberString.substring(digit,digit + 1));
+		console.log("value=" + value);
+		digitElement.style.clip = "rect(0px, " + ((value+1) * width) + "px, 150px, " + (value * width) + "px)";
+
+		// position
+		digitElement.style.left = ((digit * width) + (value * -width)) + "px";
+		digitElement.style.top = "0px";
+	}
+}
+// usage example
+//display(document.getElementById("CDT"),"85640-674517");
+</script>
+
+</html>

@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>PVP Only</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="../scripts/wsInterface.js"></script>
+    <script src="../scripts/jquery-2.1.4.min.js"></script>
+    <script src="../scripts/utils.js"></script>
+    <script src="../scripts/sessionUtils.js"></script>
+    <script src="../scripts/countDownTimer.js"></script>
+    <link rel="stylesheet" type="text/css" href="../styles/site.css" />
+    <script>$(function () { $("#headingLocation").load("../includes/heading.html"); });</script> 
+    <script>$(function () { $("#footerLocation").load("../includes/footer.html"); });</script> 
+
+    <style>
+        .masterPage {
+            margin:0px;
+            padding:0px;
+            background-image: url(../Images/Background/Background.jpg);
+            background-repeat: repeat;
+            position:absolute;
+        }
+        .masterHeading {
+            position:absolute;
+            margin:0px;
+        }
+        .masterContent {
+            position:absolute;
+            overflow:auto;
+            padding:3px;
+            margin:0px;
+        }
+        .masterFooter { 
+            position:absolute;
+            margin:0px;
+        }
+    </style>
+
+
+</head>
+
+<body>
+     
+    <div id="pageLocation" class="masterPage">
+        <div id="headingLocation" class="masterHeading">Heading</div>
+        <div id="contentLocation" class="masterContent">Content</div>
+        <div id="footerLocation" class="masterFooter">Footer</div>
+    </div>
+   
+</body>
+
+<script>
+    console.log("Master - version 2.4");
+
+    // globally use load content function
+    function loadContent(pageName) {
+        console.log("loading content '" + pageName + "'");
+        $("#contentLocation").load("../content/" + pageName + ".html");
+        resize();
+    }
+
+
+    // orientation management
+    var previousOrientation = window.orientation;
+    function checkOrientation() {
+        if (window.orientation !== previousOrientation) {
+            previousOrientation = window.orientation;
+            resize();
+        }
+    }
+    window.addEventListener("orientationchange", checkOrientation, false);
+
+
+    // resize management
+    var contentWidth = 0; // global calculated content width
+    function resize() {
+        console.log("resize");
+
+        contentWidth = (window.getComputedStyle(contentLocation).width).replace("px", ""); // get rid of if possible
+
+        // shortcuts
+        var pageDiv = document.getElementById("pageLocation");
+        var headingDiv = document.getElementById("headingLocation");
+        var contentDiv = document.getElementById("contentLocation");
+        var footerDiv = document.getElementById("footerLocation");
+
+        // size page appropriatly for the display
+        pageDiv.style.top = "0px";
+        pageDiv.style.left = "10px";
+        pageDiv.style.width = (window.innerWidth-20) + "px";
+        pageDiv.style.height = (window.innerHeight-10) + "px";
+                
+                
+        // position and size heading container
+        headingDiv.style.width = pageDiv.clientWidth + "px";
+        headingDiv.style.top = pageDiv.clientTop + "px";
+        headingDiv.style.left = pageDiv.clientLeft + "px";
+        if (typeof window.resizeHeading == "function") resizeHeading();
+
+        // position and resize footer container
+        footerDiv.style.width = pageDiv.clientWidth + "px";
+        footerDiv.style.top = (pageDiv.offsetHeight - footerDiv.offsetHeight) + "px";
+        footerDiv.style.left = pageDiv.clientLeft + "px";
+        if (typeof window.resizeFooter == "function") resizeFooter();
+        
+
+        // position and resize content container
+        contentDiv.style.width = (pageDiv.clientWidth + 4) + "px";
+        contentDiv.style.height = (pageDiv.clientHeight - (headingDiv.offsetHeight + footerDiv.offsetHeight) + 10) + "px";
+        contentDiv.style.top = (pageDiv.clientTop + headingDiv.offsetHeight) + "px";
+        if (typeof window.resizeContent == "function") resizeContent();
+    }
+    window.addEventListener("resize", resize, false);
+    
+    // initialize the page once the user has logged in.
+    if (mySession != null) loadContent("tabBrowser");
+
+</script>
+</html>

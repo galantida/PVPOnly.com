@@ -1,0 +1,327 @@
+﻿
+<!-- Styles -->
+<link rel="stylesheet" type="text/css" href="../styles/events.css" />
+
+
+<!-- script -->
+<script>
+    var targetEvent; // used to persist the data object for this tab
+
+    // executed on tab creation
+    var eventTabName; // used only to carry the tabName through to the response
+    function tabEventInit(tabName, selectable)
+    {
+        // delete old tab
+        deleteTabSelector(eventTabName);
+        deleteTabContent(eventTabName);
+
+        // save the new tab name and request tab information
+        eventTabName = tabName;
+        requestJSONInfo("events", "getEvent", { "EventID": tabName }, requestEventResponse);
+    }
+
+    // executed on tab selection
+    function tabEventSelected(tabName) {
+        // this tab is not selectable
+    }
+
+    
+    function requestEventResponse(response) {
+
+        // get response
+        targetEvent = response.obj[0]; // set current event being viewed
+        targetEvent.EventStatus = eventStatus(targetEvent); // add event status to it. This is in tabEvents. make sure it has been included
+
+        // create html area
+        var result = "";
+        result += "<div id='divEvent' class='Container-Solid' style='float:left;text-align:left;'>Loading...</div>";
+        result += "<div id='divEventAttendees' class='Container-Solid' style='float:left;text-align:left;'>Loading...</div>";
+        document.getElementById("tabContent" + eventTabName).innerHTML = result;
+
+        // display event
+        document.getElementById("divEvent").innerHTML = displayEvent();
+
+        // request additional event information
+        requestJSONInfo("events", "geteventattendees", { "EventID": targetEvent.ID }, requestAttendeesResponse);
+    }
+
+    function displayEvent() {
+        var result = "";
+        result += "<font class='EventText'>" + targetEvent.Name + "</font><br>";
+        result += "<font class='EventSubText'>" + displayDateTime(new Date(targetEvent.EventStart)) + "</font><br>";
+
+        // ip address detection
+        if (targetEvent.IPAddress == mySession.session.IPAddress) result += "<font class='EventSubText'>" + targetEvent.Location + " (" + targetEvent.IPAddress + " on target)</font><br>";
+        else result += "<font class='EventSubText'>" + targetEvent.Location + " (" + targetEvent.IPAddress + " virtual deployment(" + mySession.session.IPAddress + "))</font><br>";
+
+        if (targetEvent.GroupName != null) result += "<font class='EventSubText'>This is a ranked event for '" + targetEvent.GroupName + "' members.</font><br>";
+        result += "<font class='EventSubText'>Description:" + targetEvent.Description + "</font><br>";
+
+        // display count down
+        //result += "<div id='divCountDownTimer' style='border-style:solid;border-width:1px;position:absolute;top:100px;left:100px;'>Timer Location</div>";
+
+        result += "<div class='Button' onclick='editEvent()'>Edit</div>";
+
+        return result;
+
+
+        // initialize and start countdown timer
+        var des = new Date(Date.now());
+        des.setMonth(des.getMonth() + 1);
+        //initCDTimer('divCountDownTimer', des, 100);
+        //startCDTimer();
+
+
+        // live edit of information
+        // future count down timer
+        // display games to be played
+        // ip detection
+        // past recap from sarge about the night
+        // link to send a message to the group. 
+        // adjust message setting for this group (automated event updates only no coordinator messages).
+        // present at the location deply with name, name. be the first to deploy. (Award)
+        // public or private
+
+        // link to message board - maybe not just link to messages?
+        //      display images
+    }
+
+    function editEvent() {
+        document.getElementById("tabContent" + eventTabName).innerHTML = displayEventEdit();
+    }
+
+    function displayEventEdit() {
+        var result = "";
+
+        // name and date
+        result += "<input type='text' id='name' placeholder='Event Name' value='" + targetEvent.Name + "'><br><br>";
+        result += "<font class='EventSubText'>" + displayDateTime(new Date(targetEvent.EventStart)) + "</font><br><br>";
+
+        // location
+        result += "<input type='text' id='location' placeholder='Event Location' value='" + displayFriendly(targetEvent.Location) + "'><br><br>";
+        result += "<input type='text' id='IPAddress' placeholder='IP Address' value='" + targetEvent.IPAddress + "' style='width:200px;'>";
+        result += "<div class='Button' onclick='document.getElementById(\"IPAddress\").value = mySession.session.IPAddress'>Detect</div><br><br>";
+
+        // group
+        if (targetEvent.GroupName != null) result += "<font class='EventSubText'>This is a ranked event for '" + targetEvent.GroupName + "' members.</font><br><br>";
+
+        // description
+        result += "<input type='text' id='description' placeholder='Decription of the event' value='" + targetEvent.Description + "'><br><br>";
+
+        // display count down
+        //result += "<div id='divCountDownTimer' style='border-style:solid;border-width:1px;position:absolute;top:100px;left:100px;'>Timer Location</div>";
+
+        result += "<div class='Button' onclick='document.getElementById(\"divEvent\").innerHTML = updateEvent()'>Done</div>";
+        result += "<div class='Button' onclick='document.getElementById(\"divEvent\").innerHTML = displayEvent()'>Cancel</div>";
+
+        return result;
+    }
+
+    function requestAttendeesResponse(response) {
+
+        var myAttendee;
+        for (var t = 0; t < response.obj.length; t++) {
+            var attendee = response.obj[t];
+            //attendee.EventStatus = eventStatus(attendee); // add this events relative status (past, present, future).
+            attendee.AttendeeStatus = attendeeStatus(attendee); // add this attendees status based on RSVP and attendance
+            if (attendee.AccountID == mySession.account.ID) myAttendee = attendee; // set viewers myattendee object for this event
+        }
+
+        var result = "<font class='PortalTitles'>Deployment Team</font><hr>";
+        result += "<table>";
+
+        result += "<tr>";
+        result += "<td></td>";
+        result += "<td>Status</td>";
+
+        if ((targetEvent.EventStatus != "Past") && (targetEvent.EventStatus != "Archive")) result += "<td>Options</td>";
+        if (mySession.account.Admin == true) { result += "<td>Admin Controls</td>"; }
+        result += "</tr>";
+
+        for (var t = 0; t < response.obj.length; t++) {
+            var attendee = response.obj[t];
+            result += "<tr style='text-align:left;'>"
+            result += "<td class='EventAttendee'>" + attendee.CallSign + "</td>";
+            result += "<td class='EventIndicator'>" + attendee.AttendeeStatus + "</td>";
+
+            // options on future and present events only
+            if ((targetEvent.EventStatus != "Past") && (targetEvent.EventStatus != "Archive")) {
+                result += "<td>";
+
+                // accept or decline volunteers
+                if (myAttendee.Coordinator == "1") { // coordinators only
+                    if (attendee.RSVP == "Volunteered") { // only be done to volunteers can be accepted
+                        if ((targetEvent.EventStatus == "Future") || (targetEvent.EventStatus == "Present")) { // volunteers can be accepted for future or present events
+                            result += "<div style='float:left;' class='iconText'><img src='../images/icons/dogtag.gif' alt='Accept Volunteer' title='Accept Volunteer'><br>Accept</div>";
+                            result += "<div style='float:left;' class='iconText'><img src='../images/icons/cancel.gif' alt='Decline Volunteer' title='Decline Volunteer'><br>Deny</div>";
+                        }
+                    }
+                }
+
+                // deployment (Attendance)
+                if (myAttendee.ID == attendee.ID) {// allow only attendees to deploy themselves 
+                    if (attendee.RSVP != "Volunteered") { // volunteered can not deploy
+                        if (targetEvent.EventStatus == "Present") { // can only deploy to ongoing events
+                            result += "<div style='float:left;' class='iconText'>";
+                            if (targetEvent.IPAddress == mySession.session.IPAddress) result += "<img src='../images/icons/deploy.gif' alt='Deploy' title='Deploy'><br>Deploy";
+                            else result += "<img src='../images/icons/remote.gif' alt='Virtual Deployment' title='Virtual Deployment'><br>Virtual";
+                            result += "</div>";
+                        }
+                    }
+                }
+
+                // accept and decline invitations (RSVP)
+                if (myAttendee.ID == attendee.ID) { // allow only attendees to RSVP themselves
+                    if (targetEvent.EventStatus == "Future") { // you can only RSVP to future events
+                        result += "<div style='float:left;' class='iconText'><img src='../images/icons/group.gif' alt='Accept Invitation' title='Accept Invitation'><br>Accept</div>";
+                        result += "<div style='float:left;' class='iconText'><img src='../images/icons/skull.gif' alt='Decline Invitation' title='Decline Invitation'><br>Decline</div>";
+                    }
+                }
+
+                result += "</td>";
+            }
+
+            if (mySession.account.Admin == true) {
+                result += "<td>";
+
+                result += "<select id='attendee" + attendee.ID + "RSVP' onchange='setAttendeeRSVP(" + attendee.ID + ", this.value)'>"
+                result += "<option value='None'>None</option>"
+                result += "<option value='Invited'>Invited</option>"
+                result += "<option value='Accepted'>Accepted</option>"
+                result += "<option value='Declined'>Declined</option>"
+                result += "<option value='Volunteered'>Volunteered</option>"
+                result += "</select>"
+
+                result += "<select id='attendee" + attendee.ID + "Attendance' onchange='setAttendeeAttendance(" + attendee.ID + ", this.value)'>"
+                result += "<option value='None'>None</option>"
+                result += "<option value='Attended'>Attended</option>"
+                result += "<option value='Virtual'>Virtual</option>"
+                result += "</select>"
+
+                result += "</td>";
+
+            }
+
+            result += "</tr>"
+        }
+        result += "</table>";
+        document.getElementById("divEventAttendees").innerHTML = result;
+
+        // set values
+        for (var t = 0; t < response.obj.length; t++) {
+            attendee = response.obj[t];
+            document.getElementById("attendee" + attendee.ID + "RSVP").value = attendee.RSVP;
+            document.getElementById("attendee" + attendee.ID + "Attendance").value = attendee.Attendance;
+        }
+
+        // be the first to accept. (Award)
+    }
+
+    function setAttendeeRSVP(attendeeID, RSVP) {
+        requestJSONInfo("events", "setAttendeeRSVP", { "AttendeeID": attendeeID, "RSVP": RSVP }, setAttendeeRSVPResponse);
+    }
+
+    function setAttendeeRSVPResponse(response) {
+        // only do something with a save error
+    }
+
+    function setAttendeeAttendance(attendeeID, attendance) {
+        requestJSONInfo("events", "setAttendeeAttendance", { "AttendeeID": attendeeID, "Attendance": attendance }, setAttendeeAttendanceResponse);
+    }
+
+    function setAttendeeAttendanceResponse(response) {
+        // only do something with a save error
+    }
+
+    function updateEvent() {
+        targetEvent.Name = document.getElementById("name").value;
+        requestJSONInfo("events", "updateEvent", targetEvent, updateEventResponse);
+    }
+
+    function updateEventResponse(response) {
+        // only do something with a save error
+        requestJSONInfo("events", "getEvent", { "EventID": eventTabName }, requestEventResponse);
+    }
+     
+
+    function attendeeStatus(attendee) {
+
+        //public enum RSVP { Invited, Accepted, Declined, Volunteered, None }
+        //public enum Attendance { Attended, Virtual, None }
+
+        var status = "ERROR:" + attendee.RSVP + "-" + attendee.Attendance + " for " + attendee.EventStatus + " targetEvent.";
+
+        switch (attendee.RSVP) {
+            case "Accepted":
+                {
+                    if (attendee.EventStatus == "Present") {
+                        if (attendee.Attendance == "Attended") status = "Deployed";
+                        if (attendee.Attendance == "Virtual") status = "Virtual Deployment";
+                        if (attendee.Attendance == "None") status = "Orders Received";
+                    } else if (attendee.EventStatus == "Future") {
+                        if (attendee.Attendance == "None") status = "On My Way";
+                        else status = "Error future deployment";
+                    } else {
+                        // past event accepted
+                        if (attendee.Attendance == "Attended") status = "Deployed";
+                        if (attendee.Attendance == "Virtual") status = "Virtual Deployment";
+                        if (attendee.Attendance == "None") status = "AWOL";
+                    }
+                    break;
+                }
+            case "Invited":
+                {
+                    if (attendee.EventStatus == "Present") {
+                        if (attendee.Attendance == "Attended") status = "Unexpected Deployment";
+                        if (attendee.Attendance == "Virtual") status = "Unexpected Virtual Deployment";
+                        if (attendee.Attendance == "None") status = "Missing in Action";
+                    } else if (attendee.EventStatus == "Future") {
+                        if (attendee.Attendance == "None") status = "Orders Issued";
+                        else status = "Error future deployment";
+                    } else {
+                        // past event invited
+                        if (attendee.Attendance == "Attended") status = "Unexpected Deployment";
+                        if (attendee.Attendance == "Virtual") status = "Unexpected Virtual Deployment";
+                        if (attendee.Attendance == "None") status = "Missing in Action";
+                    }
+                    break;
+                }
+            case "Declined":
+                {
+                    if (attendee.EventStatus == "Present") {
+                        if (attendee.Attendance == "Attended") status = "Unexpected Deployment"; // first accept?
+                        if (attendee.Attendance == "Virtual") status = "Unexpected Virtual Deployment"; // first accept?
+                        if (attendee.Attendance == "None") status = "Declined";
+                    } else if (attendee.EventStatus == "Future") {
+                        if (attendee.Attendance == "None") status = "Declined";
+                        else status = "Error future deployment";
+                    } else {
+                        // past event declined
+                        if (attendee.Attendance == "Attended") status = "Unexpected Deployment"; // first accept?
+                        if (attendee.Attendance == "Virtual") status = "Unexpected Virtual Deployment"; // first accept?
+                        if (attendee.Attendance == "None") status = "Conscientious Objector";
+                    }
+                    break;
+                }
+            case "Volunteered":
+                {
+                    if ((attendee.EventStatus == "Present") || (attendee.EventStatus == "Future")) {
+                        if (attendee.Attendance == "None") status = "Volunteer for Service";
+                        else status = "Error volunteer " + attendee.Attendance;
+                    } else {
+                        if (attendee.Attendance == "None") status = "Volunteer Ignored";
+                        else status = "Error volunteer " + attendee.Attendance;
+                    }
+                    break;
+                }
+            default:
+                {
+                    status = "Error invader";
+                    break;
+                }
+        }
+
+        return status;
+    }
+</script>
+    

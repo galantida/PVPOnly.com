@@ -1,0 +1,23 @@
+﻿ <script>
+     var Messages = null;
+     function MessagesRequest(tabNo) {
+         // check if data is null or old
+         if ((Messages == null) || (new Date(Messages.received) < (Date.now() - 60000))) { // older than one minute
+             Messages = tabNo;
+             requestJSONInfo("messages", "myMessages", {}, MessagesResponse);
+         }
+     }
+
+     function MessagesResponse(obj) {
+         if (obj.summary != "Error") {
+             var tabNo = Messages; // get tmp tab number
+             Messages = obj; // cache data
+
+             // display data by including html formatting from another file
+             document.getElementById("tabContent" + tabNo).innerHTML = '<span class="Container-Heading">MESSAGES</span><br>' + JSON.stringify(Messages.obj);
+             resize();
+         }
+         else console.log("Unexpected response.");
+     }
+</script>
+    

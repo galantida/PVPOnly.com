@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PVPOnlyWebServices", "PVPOnlyWebServices\PVPOnlyWebServices.csproj", "{D005484C-03C8-4B72-8501-145C760E43FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PVPOnlyLibrary", "PVPOnlyLibrary\PVPOnlyLibrary.csproj", "{6A533CC1-3F39-4590-AEBB-7A20315DB39A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PVPOnlyWebSite", "PVPOnlyWebSite\PVPOnlyWebSite.csproj", "{7467B077-F2D1-4326-BBEC-CE8D6316D925}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D005484C-03C8-4B72-8501-145C760E43FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D005484C-03C8-4B72-8501-145C760E43FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D005484C-03C8-4B72-8501-145C760E43FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D005484C-03C8-4B72-8501-145C760E43FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A533CC1-3F39-4590-AEBB-7A20315DB39A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A533CC1-3F39-4590-AEBB-7A20315DB39A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A533CC1-3F39-4590-AEBB-7A20315DB39A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A533CC1-3F39-4590-AEBB-7A20315DB39A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7467B077-F2D1-4326-BBEC-CE8D6316D925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7467B077-F2D1-4326-BBEC-CE8D6316D925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7467B077-F2D1-4326-BBEC-CE8D6316D925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7467B077-F2D1-4326-BBEC-CE8D6316D925}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

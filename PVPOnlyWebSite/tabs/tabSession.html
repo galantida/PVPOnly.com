@@ -1,0 +1,15 @@
+﻿ <script>
+
+     var sessionContent;
+     function SessionInit(tabNo) {
+         // grab handle to content tab
+         sessionContent = document.getElementById("tabContent" + tabNo);
+     }
+
+     function SessionSelected() {
+         sessionContent.innerHTML = '<span class="Container-Heading">' + mySession.account.CallSign.toUpperCase() + '</span><br>session here' + JSON.stringify(mySession.account);
+         resize();
+     }
+
+</script>
+    

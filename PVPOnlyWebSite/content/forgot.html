@@ -1,0 +1,74 @@
+﻿<!-- HTML -->
+<br /><br />
+<div id="panel" class="Container-Opac" style="width:250px;">
+    <span class="Container-Heading">Send Password</span><br />
+    <br />
+    <span id="message" style="font-weight:bold;font-size:12px;"></span><br />
+    <br />
+    <input id="emailAddress" type="text" placeholder="emailAddress" onkeydown="displayMessage('');"/><br /><br />
+    <br />
+    <div id="controls" style="display:inline-block;text-align:center;">
+        <div class="Button" onclick="forgotPasswordRequest();">Send</div>
+        <div class="Button" onclick="loadContent('authentication');">Cancel</div>
+    </div>
+    <br />
+    <br />
+</div>
+<br />
+
+
+
+<!-- Code -->
+<script>
+    function resizeContent() {
+        var panel = document.getElementById("panel");
+        //panel.style.marginLeft = (((window.innerWidth - panel.clientWidth) / 2) - 8) + "px";
+        panel.style.marginLeft = (((contentWidth - panel.clientWidth) / 2) - 8) + "px"; // new rezie for mobile
+    }
+
+    function keyDownTextField(e) {
+        var keyCode = e.keyCode;
+        if (keyCode == 13) forgot();
+    }
+
+    // send request
+    function forgotPasswordRequest() {
+
+        // validation
+        emailAddressField = document.getElementById('emailAddress');
+        if (emailAddressField.value == "") {
+            displayMessage("Email Address is Required", "red");
+            emailAddressField.focus();
+            return;
+        }
+        
+        // request
+        displayMessage("Requesting password email...", "blue");
+        var params = { "emailAddress": emailAddressField.value };
+        requestJSONInfo("session", "forgotPassword", params, forgotPasswordResponse);
+    }
+
+    // receved response
+    function forgotPasswordResponse(obj) {
+        if (obj.summary != "Error") {
+            displayMessage(obj.description, "green");
+        }
+        else {
+            displayMessage(obj.description, "red");
+            emailAddressField.focus();
+        }
+    }
+
+
+    function displayMessage(description, color) {
+        var field = document.getElementById("message");
+        field.style.color = color;
+        field.innerHTML = description;
+    }
+
+    resize();
+    document.addEventListener("keydown", keyDownTextField, false);
+    document.getElementById('emailAddress').focus();
+</script>
+
+

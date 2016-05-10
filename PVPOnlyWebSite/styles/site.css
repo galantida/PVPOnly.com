@@ -1,0 +1,113 @@
+﻿/* DEFAULTS
+----------------------------------------------------------*/
+
+body {
+    background-color: #000000;
+    font-size: 12px;
+    color: #DDDDDD;
+    font-family: "Arial";
+    margin: 0px auto;
+    padding: 0px;
+    text-align:center;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: none;
+}
+.Container-Solid
+{
+    white-space:normal;
+    background:#000000;
+    border-width: 1px;
+    border-style: solid; 
+    border-color: white;
+    padding:10px;
+    margin:5px;
+}
+.Container-Opac
+{
+    white-space:normal;
+    background:rgba(0, 0, 0, 0.5);
+    border-width: 1px;
+    border-style: solid; 
+    border-color: #999999;
+    padding:10px;
+    margin:5px;
+}
+
+.Container-Heading
+{
+    font-family: "impact";
+    color:#FFFFFF;
+    font-weight:normal;
+    font-size: 20px;
+    text-decoration:None;
+    letter-spacing: 5px;
+    border:0;
+    text-transform:capitalize;
+}
+
+.Button
+{
+    float:left;
+    border:1px solid;
+    width:60px;
+    margin:3px 3px 3px 3px; /* spacing between divs */
+    padding:4px 2px 4px 2px; /* padding inside of divs */
+    color:#999999;
+    text-align:center;
+    cursor: pointer; 
+    cursor:hand;    
+}
+
+.Button:hover
+{
+    float:left;
+    border:1px solid;
+    width:60px;
+    margin:3px 3px 3px 3px;
+    padding:4px 2px 4px 2px;
+    color:white;
+    text-align:center;
+    cursor: pointer; 
+    cursor:hand;
+    
+}
+
+input[type="text"],
+input[type="password"] 
+{
+  /*display: block;*/
+  margin: 0;
+  width: 80%;
+  font-family: sans-serif;
+  font-size: 16px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  padding: 5px;
+  border: solid 1px #dcdcdc;
+  transition: box-shadow 0.3s, border 0.3s;
+}
+input[type="text"]:focus,
+input[type="password"]:focus 
+{
+  outline: none;
+  border: solid 1px #707070;
+  box-shadow: 0 0 30px 1px #C28548; /* brown */
+  /*box-shadow: 0 0 10px 1px #339933; /* green */
+  /*box-shadow: 0 0 10px 1px #969696;*/
+}
+ .iconText {
+    text-align:center;
+    font-size:9px;
+    font-family:'Tahoma';
+}
+ .iconTextSelected {
+    text-align:center;
+    font-size:9px;
+    font-family:'Tahoma';
+    color:yellow;
+}
+
+
+
+
